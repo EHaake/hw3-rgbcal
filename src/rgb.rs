@@ -1,8 +1,9 @@
 use crate::*;
 
-// Type alias for array of AnyPins with static lifetime.
+/// Type alias for array of AnyPins with static lifetime.
 type RgbPins = [Output<'static, AnyPin>; 3];
 
+/// An RGB led is represented here.
 pub struct Rgb {
     rgb: RgbPins, // The actual array of pins.
     // Shadow variables to minimize lock contention.

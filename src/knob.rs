@@ -1,8 +1,9 @@
 use crate::*;
 
-// Type alias for an SAADC with static lifetime and 1 channel.
+/// Type alias for an SAADC with static lifetime and 1 channel.
 pub type Adc = saadc::Saadc<'static, 1>;
 
+/// A Knob that is a wrapper for an Adc
 pub struct Knob(Adc);
 
 impl Knob {

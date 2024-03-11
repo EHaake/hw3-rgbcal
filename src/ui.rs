@@ -1,11 +1,19 @@
 use crate::*;
 
-/// Button State enum - indicates which buttons are currently pressed.
+/// Button State enum - Available button states.
 enum ButtonPressed {
     Neither,
     A,
     B,
     Both,
+}
+
+/// Control Enum - Available controls to modify.
+enum Control {
+    RedLed,
+    GreenLed,
+    BlueLed,
+    FrameRate,
 }
 
 /// Represents the UI state.
@@ -124,26 +132,47 @@ impl Ui {
             // Measure the knob's current position
             let level = self.knob.measure().await;
 
-            match self.button_state() {
-                ButtonPressed::Both => {
-                    rprintln!("Both buttons pressed!");
+            // Flag to indicate if a level has been changed.
+            let mut control_changed = false;
+
+            // Choose the appropriate control to modify based on which buttons
+            // are being pressed.
+            let control = match self.button_state() {
+                ButtonPressed::Both => Control::RedLed, // control red led
+                ButtonPressed::A => Control::BlueLed,   // control blue led
+                ButtonPressed::B => Control::GreenLed,  // control green led
+                ButtonPressed::Neither => Control::FrameRate, // control frame rate
+            };
+
+            // Adjust the led color corresponding to the control selected.
+            match control {
+                Control::RedLed => {
+                    if level != self.state.levels[0] {
+                        self.state.levels[0] = level;
+                        control_changed = true;
+                    }
                 }
-                ButtonPressed::A => {
-                    rprintln!("Button A pressed!");
+                Control::GreenLed => {
+                    if level != self.state.levels[1] {
+                        self.state.levels[1] = level;
+                        control_changed = true;
+                    }
                 }
-                ButtonPressed::B => {
-                    rprintln!("B button pressed!");
+                Control::BlueLed => {
+                    if level != self.state.levels[2] {
+                        self.state.levels[2] = level;
+                        control_changed = true;
+                    }
                 }
-                ButtonPressed::Neither => {
-                    rprintln!("Neither button pressed!");
-                }
+                Control::FrameRate => {}
             }
 
-            // If the level has changed...
-            if level != self.state.levels[2] {
-                // ... update the values and print them.
-                self.state.levels[2] = level;
+            // Display the new values only if a change has occurred.
+            if control_changed {
+                // Print the current state.
                 self.state.show();
+
+                // Update the global rgb levels Mutex.
                 set_rgb_levels(|rgb| {
                     *rgb = self.state.levels;
                 })

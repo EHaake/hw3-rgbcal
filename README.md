@@ -65,3 +65,5 @@ to be right now: it can be tuned lower.
 ## Erik's Comments
 
 First I went through each file and added documentation to very function and most lines. This was helpful to understand what every part of the code was doing, as well as to practice writing doc comments in proper Rust style. To figure out how to write correctly styled doc comments, I looked in the Rust by Example section on it [here](https://doc.rust-lang.org/rust-by-example/meta/doc.html).
+
+Since the configuration is that the knob controls the blue level, I next needed to enable the buttons. The buttons were already included in the Ui, so it was a simple matter to get them configured. I added a `ButtonPressed` enum and an implementation in `Ui` that reads the button states and returns a `ButtonPressed` value. Then, in the main Ui loop, I can match over the enum and call the appropriate code. This was inspired by an earlier demo in which we try to press both buttons at the same time. 

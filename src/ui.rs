@@ -52,23 +52,23 @@ impl Default for UiState {
 
 /// Represents the UI of the program with a knob, A and B buttons and state.
 pub struct Ui {
-    knob: Knob, // a knob to control the frame rate or brightness of the led.
+    knob: Knob,       // a knob to control the frame rate or brightness of the led.
     button_a: Button, // Button A on the microbit.
     button_b: Button, // Button B on the microbit.
-    state: UiState,  // The state of the UI.
+    state: UiState,   // The state of the UI.
 }
 
 impl Ui {
     /// Create a new Ui instance with the given arguments. Configure the UiState with
     /// default values. The Knob controls the frame rate, and holding the buttons
-    /// changes the control to modify a color brightness level
-    /// 
+    /// changes the control to modify a color brightness level.
+    ///
     /// # Arguments
     ///
     /// * 'knob' - The control for modifying brightness settings.
     /// * 'button_a' - The A button on the Microbit.
     /// * 'button_b' - The B button on the Microbit.
-    /// 
+    ///
     /// # Returns
     ///
     /// A new 'Ui' instance.
@@ -81,10 +81,17 @@ impl Ui {
         }
     }
 
+    /// Figures out which combination of buttons is being pressed and then
+    /// returns the appropriate enum value.
+    ///
+    /// # Returns
+    ///
+    /// A 'ButtonPressed' enum value correspoding to which buttons are pressed.
     fn button_state(&self) -> ButtonPressed {
-        let a_pressed = self.button_a.is_low();
-        let b_pressed = self.button_b.is_low();
+        let a_pressed = self.button_a.is_low(); // check if button a is pressed.
+        let b_pressed = self.button_b.is_low(); // check if button b is pressed.
 
+        // Match the state of buttons pressed and return the appropriate value.
         match (a_pressed, b_pressed) {
             (true, true) => ButtonPressed::Both,
             (true, false) => ButtonPressed::A,
@@ -92,7 +99,7 @@ impl Ui {
             (false, false) => ButtonPressed::Neither,
         }
     }
-    
+
     /// The main Ui loop, which measures and reports the current values.
     ///
     /// When program starts, it reads the current knob position and updates the
@@ -111,23 +118,22 @@ impl Ui {
         // Display the Ui state info.
         self.state.show();
 
-        // Main loop which continuously measures the knob position and 
+        // Main loop which continuously measures the knob position and
         // updates the state levels accordingly.
         loop {
             // Measure the knob's current position
-            let level = self.knob.measure().await; 
+            let level = self.knob.measure().await;
 
             match self.button_state() {
                 ButtonPressed::Both => {
                     rprintln!("Both buttons pressed!");
-                },
+                }
                 ButtonPressed::A => {
                     rprintln!("Button A pressed!");
-                },
+                }
                 ButtonPressed::B => {
                     rprintln!("B button pressed!");
-
-                },
+                }
                 ButtonPressed::Neither => {
                     rprintln!("Neither button pressed!");
                 }

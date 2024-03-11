@@ -61,3 +61,7 @@ will eat CPU for no reason.
 
 I think the frame rate is probably set higher than it needs
 to be right now: it can be tuned lower.
+
+## Erik's Comments
+
+First I went through each file and added documentation to very function and most lines. This was helpful to understand what every part of the code was doing, as well as to practice writing doc comments in proper Rust style. To figure out how to write correctly styled doc comments, I looked in the Rust by Example section on it [here](https://doc.rust-lang.org/rust-by-example/meta/doc.html).

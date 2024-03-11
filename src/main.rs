@@ -27,6 +27,8 @@ use num_traits::float::FloatCore;
 
 /// Global value to store the current RGB values.
 pub static RGB_LEVELS: Mutex<ThreadModeRawMutex, [u32; 3]> = Mutex::new([0; 3]);
+/// Global value to store the current FRAME RATE value
+pub static FRAME_RATE: Mutex<ThreadModeRawMutex, u64> = Mutex::new(100);
 /// 16 levels for each RGB value.
 pub const LEVELS: u32 = 16;
 
@@ -55,6 +57,18 @@ where
     let mut rgb_levels = RGB_LEVELS.lock().await; 
     // Set the values with the provided setter fn.
     setter(&mut rgb_levels);
+}
+
+async fn get_frame_rate() -> u64 {
+    let frame_rate = FRAME_RATE.lock().await;
+    *frame_rate
+}
+
+async fn set_frame_rate<F>(setter: F)
+    where F: FnOnce(&mut u64),
+{
+    let mut frame_rate = FRAME_RATE.lock().await;
+    setter(&mut frame_rate);
 }
 
 /// Main function - is async and doesn't return.

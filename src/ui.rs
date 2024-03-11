@@ -1,5 +1,13 @@
 use crate::*;
 
+/// Button State enum - indicates which buttons are currently pressed.
+enum ButtonPressed {
+    Neither,
+    A,
+    B,
+    Both,
+}
+
 /// Represents the UI state.
 struct UiState {
     levels: [u32; 3], // levels for each of the 3 led colors.
@@ -45,8 +53,8 @@ impl Default for UiState {
 /// Represents the UI of the program with a knob, A and B buttons and state.
 pub struct Ui {
     knob: Knob, // a knob to control the frame rate or brightness of the led.
-    _button_a: Button, // Button A on the microbit.
-    _button_b: Button, // Button B on the microbit.
+    button_a: Button, // Button A on the microbit.
+    button_b: Button, // Button B on the microbit.
     state: UiState,  // The state of the UI.
 }
 
@@ -64,12 +72,24 @@ impl Ui {
     /// # Returns
     ///
     /// A new 'Ui' instance.
-    pub fn new(knob: Knob, _button_a: Button, _button_b: Button) -> Self {
+    pub fn new(knob: Knob, button_a: Button, button_b: Button) -> Self {
         Self {
             knob,
-            _button_a,
-            _button_b,
+            button_a,
+            button_b,
             state: UiState::default(),
+        }
+    }
+
+    fn button_state(&self) -> ButtonPressed {
+        let a_pressed = self.button_a.is_low();
+        let b_pressed = self.button_b.is_low();
+
+        match (a_pressed, b_pressed) {
+            (true, true) => ButtonPressed::Both,
+            (true, false) => ButtonPressed::A,
+            (false, true) => ButtonPressed::B,
+            (false, false) => ButtonPressed::Neither,
         }
     }
     
@@ -91,10 +111,27 @@ impl Ui {
         // Display the Ui state info.
         self.state.show();
 
-        // Main loop which 
+        // Main loop which continuously measures the knob position and 
+        // updates the state levels accordingly.
         loop {
             // Measure the knob's current position
             let level = self.knob.measure().await; 
+
+            match self.button_state() {
+                ButtonPressed::Both => {
+                    rprintln!("Both buttons pressed!");
+                },
+                ButtonPressed::A => {
+                    rprintln!("Button A pressed!");
+                },
+                ButtonPressed::B => {
+                    rprintln!("B button pressed!");
+
+                },
+                ButtonPressed::Neither => {
+                    rprintln!("Neither button pressed!");
+                }
+            }
 
             // If the level has changed...
             if level != self.state.levels[2] {

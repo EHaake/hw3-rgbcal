@@ -49,9 +49,8 @@ impl Rgb {
 
     /// Performs an on/off 'step' for a single, specified led.
     ///
-    /// Turns on the LED for a duration in proportion to it's frame rate,
-    /// at an intensity determined by its level,
-    /// then turns it off for the rest of the frame period.
+    /// Turns on the LED for a duration in proportion to it's frame rate
+    /// and level then turns it off for the rest of the frame period.
     ///
     /// # Arguments
     ///

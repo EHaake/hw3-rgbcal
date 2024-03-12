@@ -108,6 +108,21 @@ impl Ui {
         }
     }
 
+    /// Scale the knob level to a value from 10..160 in steps of 10 to calculate
+    /// the frame rate.
+    ///
+    /// # Arguments
+    ///
+    /// * 'level' - The measured level from the knob scaled from 0..15 as a u32.
+    ///
+    /// # Returns
+    ///
+    /// A scaled level to be used as a frame rate as a u64.
+    fn frame_rate_from_level(&self, level: u32) -> u64 {
+        let scaled_level = (level + 1) * 10;
+        scaled_level as u64
+    }
+
     /// The main Ui loop, which measures and reports the current values.
     ///
     /// When program starts, it reads the current knob position and updates the
@@ -164,7 +179,13 @@ impl Ui {
                         control_changed = true;
                     }
                 }
-                Control::FrameRate => {}
+                Control::FrameRate => {
+                    let frame_rate = self.frame_rate_from_level(level);
+                    if frame_rate != self.state.frame_rate {
+                        self.state.frame_rate = frame_rate;
+                        control_changed = true;
+                    }
+                }
             }
 
             // Display the new values only if a change has occurred.
@@ -175,6 +196,12 @@ impl Ui {
                 // Update the global rgb levels Mutex.
                 set_rgb_levels(|rgb| {
                     *rgb = self.state.levels;
+                })
+                .await;
+
+                // Update the global frame_rate level Mutex
+                set_frame_rate(|frame_rate| {
+                    *frame_rate = self.state.frame_rate;
                 })
                 .await;
             }

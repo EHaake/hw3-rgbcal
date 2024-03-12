@@ -47,9 +47,10 @@ impl Rgb {
         }
     }
 
-    /// Perform a brightness step for a single, specified led.
+    /// Performs an on/off 'step' for a single, specified led.
     ///
-    /// Turns on the LED for a duration in proportion to it's brightness level,
+    /// Turns on the LED for a duration in proportion to it's frame rate,
+    /// at an intensity determined by its level,
     /// then turns it off for the rest of the frame period.
     ///
     /// # Arguments
@@ -93,8 +94,14 @@ impl Rgb {
     /// This function runs forever and so should never exit.
     pub async fn run(mut self) -> ! {
         loop {
-            // Get the current brightness levels for all leds.
+            // Get the current brightness levels for all leds
+            // and update internal value.
             self.levels = get_rgb_levels().await;
+
+            // Get the frame rate and calculate the tick time from it,
+            // updating the internal value.
+            let frame_rate = get_frame_rate().await;
+            self.tick_time = Self::frame_tick_time(frame_rate);
 
             // Update brightness of each led in sequence.
             for led in 0..3 {

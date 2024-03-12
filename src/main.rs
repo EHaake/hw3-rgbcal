@@ -59,11 +59,23 @@ where
     setter(&mut rgb_levels);
 }
 
+/// Returns the current frame rate value from a global Mutex asynchronously.
+///
+/// Acquires a lock on the global FRAME_RATE variable for the duration of the fn.
+///
+/// # Returns
+///
+/// The current value in FRAME_RATE as a u64.
 async fn get_frame_rate() -> u64 {
     let frame_rate = FRAME_RATE.lock().await;
     *frame_rate
 }
 
+/// Sets the current frame rate value into a global Mutex asynchronously.
+///
+/// # Arguments
+/// * 'setter' - A setter function as a closure that can only be called once with
+/// a mutable reference to the frame rate value as a u64.
 async fn set_frame_rate<F>(setter: F)
     where F: FnOnce(&mut u64),
 {

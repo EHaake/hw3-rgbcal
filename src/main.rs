@@ -27,6 +27,8 @@ use num_traits::float::FloatCore;
 
 /// Global value to store the current RGB values.
 pub static RGB_LEVELS: Mutex<ThreadModeRawMutex, [u32; 3]> = Mutex::new([0; 3]);
+/// Global value to store the current FRAME RATE value
+pub static FRAME_RATE: Mutex<ThreadModeRawMutex, u64> = Mutex::new(100);
 /// 16 levels for each RGB value.
 pub const LEVELS: u32 = 16;
 
@@ -55,6 +57,30 @@ where
     let mut rgb_levels = RGB_LEVELS.lock().await; 
     // Set the values with the provided setter fn.
     setter(&mut rgb_levels);
+}
+
+/// Returns the current frame rate value from a global Mutex asynchronously.
+///
+/// Acquires a lock on the global FRAME_RATE variable for the duration of the fn.
+///
+/// # Returns
+///
+/// The current value in FRAME_RATE as a u64.
+async fn get_frame_rate() -> u64 {
+    let frame_rate = FRAME_RATE.lock().await;
+    *frame_rate
+}
+
+/// Sets the current frame rate value into a global Mutex asynchronously.
+///
+/// # Arguments
+/// * 'setter' - A setter function as a closure that can only be called once with
+/// a mutable reference to the frame rate value as a u64.
+async fn set_frame_rate<F>(setter: F)
+    where F: FnOnce(&mut u64),
+{
+    let mut frame_rate = FRAME_RATE.lock().await;
+    setter(&mut frame_rate);
 }
 
 /// Main function - is async and doesn't return.

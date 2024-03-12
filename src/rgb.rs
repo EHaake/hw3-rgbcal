@@ -42,7 +42,7 @@ impl Rgb {
         // return a new struct instance, setting initial levels to 0.
         Self {
             rgb,
-            levels: [0; 3], 
+            levels: [0; 3],
             tick_time,
         }
     }
@@ -62,11 +62,11 @@ impl Rgb {
         // Turn on led for a period of time if level is non-zero.
         if level > 0 {
             // Turn on led.
-            self.rgb[led].set_high(); 
+            self.rgb[led].set_high();
 
-            // Calculate the time the led should be on for based on the current level,
-            // and the tick time.
-            let on_time = level as u64 * self.tick_time; 
+            // Calculate the time the led should be on for based
+            // on the current level and the tick time.
+            let on_time = level as u64 * self.tick_time;
 
             // Wait for the specified time in microseconds.
             Timer::after_micros(on_time).await;
@@ -82,7 +82,7 @@ impl Rgb {
         if level > 0 {
             // Calculate the time for the off period.
             let off_time = level as u64 * self.tick_time;
-            
+
             // Wait for specified time in microseconds.
             Timer::after_micros(off_time).await;
         }

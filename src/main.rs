@@ -34,7 +34,7 @@ pub const LEVELS: u32 = 16;
 
 /// Returns the current rgb values from the global Mutex asynchronously.
 ///
-/// Acquires a lock on the global RGB_LEVELS variable for the duration of the fn.
+/// Acquires a lock on the global RGB_LEVELS var for the duration of the fn.
 ///
 /// # Returns
 ///
@@ -47,21 +47,21 @@ async fn get_rgb_levels() -> [u32; 3] {
 /// Sets the current RGB values into the Mutex asynchronously.
 ///
 /// # Arguments
-/// * 'setter' - A setter function as a closure that can only be called once with
-/// a mutable reference to the RGB values as a mutable array of 3 u32 values.
+/// * 'setter' - A setter function as a closure that can only be called once
+/// with a mutable reference to the RGB values as a mutable array of 3 u32s.
 async fn set_rgb_levels<F>(setter: F)
 where
     F: FnOnce(&mut [u32; 3]),
 {
     // Get a lock on the RGB_LEVELS Mutex.
-    let mut rgb_levels = RGB_LEVELS.lock().await; 
+    let mut rgb_levels = RGB_LEVELS.lock().await;
     // Set the values with the provided setter fn.
     setter(&mut rgb_levels);
 }
 
 /// Returns the current frame rate value from a global Mutex asynchronously.
 ///
-/// Acquires a lock on the global FRAME_RATE variable for the duration of the fn.
+/// Acquires a lock on the global FRAME_RATE var for the duration of the fn.
 ///
 /// # Returns
 ///
@@ -74,10 +74,11 @@ async fn get_frame_rate() -> u64 {
 /// Sets the current frame rate value into a global Mutex asynchronously.
 ///
 /// # Arguments
-/// * 'setter' - A setter function as a closure that can only be called once with
-/// a mutable reference to the frame rate value as a u64.
+/// * 'setter' - A setter function as a closure that can only be called once
+/// with a mutable reference to the frame rate value as a u64.
 async fn set_frame_rate<F>(setter: F)
-    where F: FnOnce(&mut u64),
+where
+    F: FnOnce(&mut u64),
 {
     let mut frame_rate = FRAME_RATE.lock().await;
     setter(&mut frame_rate);

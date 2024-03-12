@@ -21,7 +21,8 @@ impl Knob {
         Self(adc) // return the new instance
     }
 
-    /// Takes a measurement of the current adc status, scales it and returns it as a u32.
+    /// Takes a measurement of the current adc status,
+    /// scales it and returns it as a u32.
     ///
     /// # Returns
     ///
@@ -35,7 +36,8 @@ impl Knob {
         // Clamp the value to a max and convert it to a u16 from i16.
         let raw = buf[0].clamp(0, 0x7fff) as u16;
 
-        // Scale the raw value by converting to f32 and normalizing to between 0 and 1.
+        // Scale the raw value by converting to f32 and normalizing
+        // to between 0 and 1.
         let scaled = raw as f32 / 10_000.0;
 
         // Rescale to the range specified by LEVELS.

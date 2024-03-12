@@ -23,8 +23,8 @@ struct UiState {
 }
 
 impl UiState {
-    /// Display the current state of the UI - brightness levels for each color and
-    /// the frame rate. It prints the information via rtt.
+    /// Display the current state of the UI - brightness levels for each color
+    /// and the frame rate. It prints the information via rtt.
     ///
     /// Iterates over the led color names and their levels and prints them.
     /// Also prints the frame rate.
@@ -33,7 +33,7 @@ impl UiState {
         let names = ["red", "green", "blue"];
         rprintln!(); // print a newline.
 
-        // Iterate over the names and corresponding levels together, printing them.
+        // Iterate over the names and levels together, printing them.
         for (name, level) in names.iter().zip(self.levels.iter()) {
             rprintln!("{}: {}", name, level);
         }
@@ -60,16 +60,17 @@ impl Default for UiState {
 
 /// Represents the UI of the program with a knob, A and B buttons and state.
 pub struct Ui {
-    knob: Knob,       // a knob to control the frame rate or brightness of the led.
+    knob: Knob,       // a knob to control the frame rate or brightness.
     button_a: Button, // Button A on the microbit.
     button_b: Button, // Button B on the microbit.
     state: UiState,   // The state of the UI.
 }
 
 impl Ui {
-    /// Create a new Ui instance with the given arguments. Configure the UiState with
-    /// default values. The Knob controls the frame rate, and holding the buttons
-    /// changes the control to modify a color brightness level.
+    /// Create a new Ui instance with the given arguments. Configure the
+    /// UiState with default values. The Knob controls the frame rate,
+    /// and holding the buttons changes the control to modify a color
+    /// brightness level.
     ///
     /// # Arguments
     ///
@@ -108,8 +109,8 @@ impl Ui {
         }
     }
 
-    /// Scale the knob level to a value from 10..160 in steps of 10 to calculate
-    /// the frame rate.
+    /// Scale the knob level to a value from 10..160 in steps of 10 to
+    /// calculate the frame rate.
     ///
     /// # Arguments
     ///
@@ -126,8 +127,9 @@ impl Ui {
     /// The main Ui loop, which measures and reports the current values.
     ///
     /// When program starts, it reads the current knob position and updates the
-    /// levels accordingly and prints that info to the console. Then it goes into the
-    /// main loop which measures, updates and prints the info forever.
+    /// levels accordingly and prints that info to the console.
+    /// Then it goes into the main loop which measures,
+    /// updates and prints the info forever.
     pub async fn run(&mut self) -> ! {
         // Set the level of the green led based on the initial knob position.
         self.state.levels[2] = self.knob.measure().await;
@@ -153,10 +155,10 @@ impl Ui {
             // Choose the appropriate control to modify based on which buttons
             // are being pressed.
             let control = match self.button_state() {
-                ButtonPressed::Both => Control::RedLed, // control red led
-                ButtonPressed::A => Control::BlueLed,   // control blue led
-                ButtonPressed::B => Control::GreenLed,  // control green led
-                ButtonPressed::Neither => Control::FrameRate, // control frame rate
+                ButtonPressed::Both => Control::RedLed,
+                ButtonPressed::A => Control::BlueLed,
+                ButtonPressed::B => Control::GreenLed,
+                ButtonPressed::Neither => Control::FrameRate,
             };
 
             // Adjust the led color corresponding to the control selected.

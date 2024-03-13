@@ -45,14 +45,14 @@ impl UiState {
 impl Default for UiState {
     /// Default values for an instance of UiState.
     ///
-    /// The defaults set the levels to the maximum and frame rate to 100.
+    /// The defaults set the levels determined to be 'white' on my board.
     ///
     /// # Returns
     ///
     /// A new UiState instance with default values.
     fn default() -> Self {
         Self {
-            levels: [LEVELS - 1, LEVELS - 1, LEVELS - 1],
+            levels: [15, 4, 6],
             frame_rate: 100,
         }
     }
@@ -131,15 +131,6 @@ impl Ui {
     /// Then it goes into the main loop which measures,
     /// updates and prints the info forever.
     pub async fn run(&mut self) -> ! {
-        // Set the level of the green led based on the initial knob position.
-        self.state.levels[2] = self.knob.measure().await;
-
-        // Update the global RGB levels var from the measurement.
-        set_rgb_levels(|rgb| {
-            *rgb = self.state.levels;
-        })
-        .await;
-
         // Display the Ui state info.
         self.state.show();
 
@@ -190,7 +181,7 @@ impl Ui {
                 }
             }
 
-            // Display the new values only if a change has occurred.
+            // Display and update the new values only if a change has occurred.
             if control_changed {
                 // Print the current state.
                 self.state.show();

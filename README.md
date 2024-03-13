@@ -1,5 +1,6 @@
 # rgbcal: RGB LED calibration tool
 Bart Massey 2024
+Forked by Erik Haake 2024
 
 This tool is designed to find out a decent frame rate and
 maximum RGB component values to produce a white-looking RGB
@@ -7,10 +8,20 @@ of reasonable brightness.
 
 See below for UI.
 
-**XXX This tool is *mostly* finished! Please wire your
-hardware up (see below), finish it, comment it, and use it
-to find good values. Then document those values in this
-README.**
+This tool is finished! 
+
+
+Values for what appears to be as 'white' as possible with the provided board 
+and led are as follows:
+
+- Red: 15
+- Green: 4
+- Blue: 6
+- Frame Rate: 100
+
+The program starts with the defaults and 'should' appear white. Touching any
+of the buttons or knob will set the corresponding setting to the value
+measured at the knob.
 
 ## Build and Run
 

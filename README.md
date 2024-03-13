@@ -1,5 +1,5 @@
 # rgbcal: RGB LED calibration tool
-Bart Massey 2024
+Bart Massey 2024  
 Forked by Erik Haake 2024
 
 This tool is designed to find out a decent frame rate and
@@ -8,8 +8,7 @@ of reasonable brightness.
 
 See below for UI.
 
-This tool is finished! 
-
+**This tool is finished!**
 
 Values for what appears to be as 'white' as possible with the provided board 
 and led are as follows:
@@ -86,3 +85,5 @@ Implenting the frame rate adjustment took a little bit more work. I figured I wo
 Next, in the `Ui` I needed to scale the frame rate since the knob's `measure()` function returns a value scaled from 0 to 15. For that I implemented a simple scaling function on `Ui` which does just that and returns the value between 10 and 160 in steps of 10 as a u64, just as the spec requires. Then in  the `Control` match statement I compate the `frame_rate` value in the `Ui`'s  `UiState` struct. Like the other controls, if the current state doesn't match the internal state, I update the UI and set a flag to update the global Mutex.
 
 Finally, in the `run()` function in `Rgb` I just need to get the frame rate from the global Mutex, calculate the `frame_tick_time` from it and set `self.tick_time` to that value. That's all I need to do since `step()` uses the internal `tick_time` value already to turn each LED on and off for the appropriate amount of time.
+
+To finish up, I set hard coded the values I determined to be the most 'white' looking the that I could get from the LED to be the default settings. When starting program with everything wired up correctly, the led should appear white, and then touching any of the controls will then mess with the settings as expected.

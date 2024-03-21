@@ -200,10 +200,11 @@ impl Ui {
                 })
                 .await;
             }
-            self.levelmeter.update_display(self.state.levels).await;
 
-            // Wait for 50 milliseconds.
-            Timer::after_millis(50).await;
+            // Update the levelmeter every step.
+            // This adds a 50ms delay to avoid overmeasuring
+            // the knob level.
+            self.levelmeter.update_display(self.state.levels).await;
         }
     }
 }

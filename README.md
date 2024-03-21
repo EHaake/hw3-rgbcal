@@ -86,4 +86,6 @@ Next, in the `Ui` I needed to scale the frame rate since the knob's `measure()` 
 
 Finally, in the `run()` function in `Rgb` I just need to get the frame rate from the global Mutex, calculate the `frame_tick_time` from it and set `self.tick_time` to that value. That's all I need to do since `step()` uses the internal `tick_time` value already to turn each LED on and off for the appropriate amount of time.
 
+One last thing was I set the `led_pin` `OutputDrive` to `HighDrive`. With the default of `Standard`,I couldn't quite get it to look white. Changing this made a noticeable difference to my eyes in terms of how white the led became.
+
 To finish up, I set hard coded the values I determined to be the most 'white' looking the that I could get from the LED to be the default settings. When starting program with everything wired up correctly, the led should appear white, and then touching any of the controls will then mess with the settings as expected.

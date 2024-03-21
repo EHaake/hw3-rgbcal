@@ -23,7 +23,7 @@ use microbit_bsp::{
         gpio::{AnyPin, Level, Output, OutputDrive},
         saadc,
     },
-    Button, Microbit, LedMatrix
+    Button, LedMatrix, Microbit,
 };
 use num_traits::float::FloatCore;
 

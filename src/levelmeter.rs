@@ -28,19 +28,18 @@ impl LevelMeter {
     /// # Arguments
     ///
     /// * 'levels' - The current red, green and blue levels as an array of u32s.
-    pub async fn update_display(&mut self, levels: [u32; 3]) {
+    pub async fn update_display(&mut self, levels: [u32; 3], frame_rate: u64) {
         // Create a new frame object.
         let mut frame = Frame::default();
 
         // Iterate through the levels and set the appropriate leds in the matrix.
         for (i, &level) in levels.iter().enumerate() {
-            
             // Determine the correct col for each of the rgb channels
-            // 1st col -> red, 3rd col -> green, 5th col -> blue
-            let rgb_col = i;
+            // 1st col -> red, 2nd col -> green, 3rd col -> blue, 5th col -> framerate
+            let col = i;
 
             // Decide how many leds to light up based on its level.
-            // Since we have 16 levels but only 5 leds (and off), we need to scale. 
+            // Since we have 16 levels but only 5 leds (and off), we need to scale.
             let lit_leds = ((level as f32) * 5.0 / LEVELS as f32).ceil() as usize;
 
             // Light up the appropriate number of leds in the column for that color.
@@ -49,11 +48,20 @@ impl LevelMeter {
                 let actual_led_row = 4 - idx;
 
                 // Set the led in the frame buffer.
-                frame.set(rgb_col, actual_led_row);
+                frame.set(col, actual_led_row);
             }
         }
 
-        // Display the frame for 50ms. 
+        // The frame rate is on a different scale so we need to normalize differently.
+        let frame_rate_leds = ((frame_rate as f32 - 10.0) * 5.0 / (160.0 - 10.0)).ceil() as usize;
+
+        // Use column index 4 (5th column) for the frame rate.
+        for idx in 0..frame_rate_leds {
+            let actual_led_row = 4 - idx; // Start from the bottom row.
+            frame.set(4, actual_led_row); // Set the LED for the frame rate in column 4.
+        }
+
+        // Display the frame for 50ms.
         // This is here in place of the 50ms delay at the end of the ui loop.
         self.display.display(frame, Duration::from_millis(50)).await;
     }

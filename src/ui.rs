@@ -204,7 +204,9 @@ impl Ui {
             // Update the levelmeter every step.
             // This adds a 50ms delay to avoid overmeasuring
             // the knob level.
-            self.levelmeter.update_display(self.state.levels).await;
+            self.levelmeter
+                .update_display(self.state.levels, self.state.frame_rate)
+                .await;
         }
     }
 }

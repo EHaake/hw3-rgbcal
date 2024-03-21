@@ -60,10 +60,11 @@ impl Default for UiState {
 
 /// Represents the UI of the program with a knob, A and B buttons and state.
 pub struct Ui {
-    knob: Knob,       // a knob to control the frame rate or brightness.
-    button_a: Button, // Button A on the microbit.
-    button_b: Button, // Button B on the microbit.
-    state: UiState,   // The state of the UI.
+    knob: Knob,             // a knob to control the frame rate or brightness.
+    button_a: Button,       // Button A on the microbit.
+    button_b: Button,       // Button B on the microbit.
+    levelmeter: LevelMeter, // Level Meter
+    state: UiState,         // The state of the UI.
 }
 
 impl Ui {
@@ -81,11 +82,12 @@ impl Ui {
     /// # Returns
     ///
     /// A new 'Ui' instance.
-    pub fn new(knob: Knob, button_a: Button, button_b: Button) -> Self {
+    pub fn new(knob: Knob, button_a: Button, button_b: Button, levelmeter: LevelMeter) -> Self {
         Self {
             knob,
             button_a,
             button_b,
+            levelmeter,
             state: UiState::default(),
         }
     }
@@ -198,6 +200,7 @@ impl Ui {
                 })
                 .await;
             }
+            self.levelmeter.update_display(self.state.levels).await;
 
             // Wait for 50 milliseconds.
             Timer::after_millis(50).await;

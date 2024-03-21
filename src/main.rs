@@ -2,9 +2,11 @@
 #![no_main]
 
 mod knob;
+mod levelmeter;
 mod rgb;
 mod ui;
 pub use knob::*;
+pub use levelmeter::*;
 pub use rgb::*;
 pub use ui::*;
 
@@ -21,7 +23,7 @@ use microbit_bsp::{
         gpio::{AnyPin, Level, Output, OutputDrive},
         saadc,
     },
-    Button, Microbit,
+    Button, Microbit, LedMatrix
 };
 use num_traits::float::FloatCore;
 
@@ -47,7 +49,7 @@ async fn get_rgb_levels() -> [u32; 3] {
 /// Sets the current RGB values into the Mutex asynchronously.
 ///
 /// # Arguments
-/// * 'setter' - A setter function as a closure that can only be called once 
+/// * 'setter' - A setter function as a closure that can only be called once
 /// with a mutable reference to the RGB values as a mutable array of 3 u32s.
 async fn set_rgb_levels<F>(setter: F)
 where
@@ -74,7 +76,7 @@ async fn get_frame_rate() -> u64 {
 /// Sets the current frame rate value into a global Mutex asynchronously.
 ///
 /// # Arguments
-/// * 'setter' - A setter function as a closure that can only be called once 
+/// * 'setter' - A setter function as a closure that can only be called once
 /// with a mutable reference to the frame rate value as a u64.
 async fn set_frame_rate<F>(setter: F)
 where
@@ -122,8 +124,11 @@ async fn main(_spawner: Spawner) -> ! {
     // Initialize the knob interface with the initialized SAADC.
     let knob = Knob::new(saadc).await;
 
+    let display = board.display;
+    let levelmeter = LevelMeter::new(display);
+
     // Initialize the UI interface with the knob, and a,b board buttons.
-    let mut ui = Ui::new(knob, board.btn_a, board.btn_b);
+    let mut ui = Ui::new(knob, board.btn_a, board.btn_b, levelmeter);
 
     // This is the main loop -
     // Run the rgb and ui loops concurrently by joining them.

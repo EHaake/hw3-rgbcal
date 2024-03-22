@@ -88,4 +88,16 @@ Finally, in the `run()` function in `Rgb` I just need to get the frame rate from
 
 One last thing was I set the `led_pin` `OutputDrive` to `HighDrive`. With the default of `Standard`,I couldn't quite get it to look white. Changing this made a noticeable difference to my eyes in terms of how white the led became.
 
-To finish up, I set hard coded the values I determined to be the most 'white' looking the that I could get from the LED to be the default settings. When starting program with everything wired up correctly, the led should appear white, and then touching any of the controls will then mess with the settings as expected.
+To finish up, I set hard coded the values I determined to be the most 'white' looking the that I could get from the LED to be the default settings. When starting program with everything wired up correctly, the led should appear white, and then touching any of the controls will then mess with the values as expected.
+
+<hr>
+
+So that finished the assignment as specified, but I wanted to do a bit more. It seemed like a nice and obvious addtion to use the microbit's display as a level meter. It's a little awkward given that there are 5 columns and 4 metrics, so I decided to use the first 3 columns to represent the levels for red, blue and green respectively and the 5th column for the frame rate.
+
+To implement this I knew I was going to have to create a struct to represent the level meter and add it to the UI. The level meter needed access to the levels and frame rate values so it made sense to give it to the UI since those values reside in the `UiState` and `UI` owns it.
+
+Setting up the levelmeter was pretty simple, though it did take me some time to figure it out. The levelmeter struct simply contains the a `display: LedMatrix` and two methods, `new()` and `update_display()` which is where all the work is done. Since there are only 6 levels to the meter (5 leds plus off) I needed to scale the values to that range. I also needed to scale the levels and frame rate differently. Figuring out how to do this was a little tricky and includes a lot of hacky conversions of values to floats, but it works.
+
+The hardest part was figuring out an issue where the display would blink in an annoying way. It turned out that the problem was with the 50ms delay at the end of the UI loop. Once I removed this and turned the update function into an async with a 50ms delay when displaying the frame, it worked perfectly.
+
+I learned a lot in this assignment, and even more while implementing my little addition. Thanks for a great course Bart :)

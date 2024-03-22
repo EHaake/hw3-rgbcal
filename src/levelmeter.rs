@@ -57,8 +57,8 @@ impl LevelMeter {
 
         // Use column index 4 (5th column) for the frame rate.
         for idx in 0..frame_rate_leds {
-            let actual_led_row = 4 - idx; // Start from the bottom row.
-            frame.set(4, actual_led_row); // Set the LED for the frame rate in column 4.
+            let actual_led_row = 4 - idx;
+            frame.set(4, actual_led_row);
         }
 
         // Display the frame for 50ms.
